@@ -1,4 +1,5 @@
-import { getUsers, getUserByID, registerUserService } from "../services/userService.js";
+import { getUsers, getUserByID, registerUserService, loginUserService } from "../services/userService.js";
+import jwt from "jsonwebtoken";
 
 //export const getAllUsers = async(req, res) => {}
 
@@ -42,5 +43,32 @@ export async function registerUserController (req, res){
         }
         console.error("Error registrando usuario: ", error);
         res.status(500).json({message: "Error interno al registrar usuario"});
+    }
+}
+
+export async function loginUserController(req, res) {
+    console.log(req.body);
+    const {email, password} = req.body;
+
+    if(!email || !password){
+        return res.status(400).json({message: "Faltan campos obligatorios (email, password)"});
+    }
+
+    try {
+        const user = await loginUserService({email, password});
+        // Generar el JWT
+        const token = jwt.sign(
+            {_id: user._id, name: user.name, email: user.email}, 
+            process.env.JWT_SECRET, 
+            {expiresIn: "2h"}
+        );
+        res.json({message: "Login exitoso", user, token});
+
+    } catch (error) {
+        if(error.message === "Credenciales inválidas"){
+            return res.status(401).json({message: error.message});
+        }
+        console.error("Error en login: ", error);
+        res.status(500).json({message:"Error interno en login"});
     }
 }

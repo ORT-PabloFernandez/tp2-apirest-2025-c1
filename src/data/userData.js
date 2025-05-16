@@ -37,3 +37,17 @@ export async function registerUser({name, email, password}){
     return result;
 }
 
+export async function findByCredentials(email, password){
+    // Buscar el usuario por email y comprar el password usando bcrypt
+    const db = getDb();
+    const user = await db.collection("users").findOne({email});
+    if(!user){
+        return null;
+    }
+    const isMatch = await bcrypt.compare(password, user.password);
+    if(!isMatch){
+        return null;
+    }
+    return user;
+}
+

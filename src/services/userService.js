@@ -1,5 +1,5 @@
 // Contiene todos los servicios, tanto internos como externos
-import { findAllUsers, findUserById, registerUser } from "../data/userData.js";
+import { findAllUsers, findByCredentials, findUserById, registerUser } from "../data/userData.js";
 
 export async function getUsers(){
     return await findAllUsers();
@@ -18,4 +18,14 @@ export async function registerUserService({name, email, password}){
         }
         throw new Error("Error al registrar el usuario");        
     }
+}
+
+export async function loginUserService({email, password}){
+    const user = await findByCredentials(email, password);
+    if(!user){
+        throw new Error("Credenciales inválidas");        
+    }
+    // No devolver password
+    const {password: _pw, ...userWithoutPassword} = user;
+    return userWithoutPassword;
 }
