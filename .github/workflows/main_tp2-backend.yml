@@ -57,7 +57,7 @@ jobs:
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
         with:
-          app-name: 'tp2-backend'
+          app-name: 'tp2backend'
           slot-name: 'Production'
           package: .
 
