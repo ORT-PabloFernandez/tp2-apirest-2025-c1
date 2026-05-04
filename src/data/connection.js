@@ -13,7 +13,7 @@ export async function connectToDatabase(){
         try {
             client = new MongoClient(uri);
             await client.connect();
-            db = client.db("sample_tp2");
+            db = client.db("sample_mflix");
             console.log("✅ Conexión a MongoDB establecida");            
         } catch (error) {
             console.error("❌ Error conectando a MongoDB", error.message);
